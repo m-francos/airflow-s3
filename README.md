@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Este projeto simula um pipeline de dados usando o conceito de Lakehouse, com três camadas: landing, bronze, silver e gold. O pipeline é orquestrado com Apache Airflow.
 
 
@@ -14,3 +15,6 @@ Este projeto simula um pipeline de dados usando o conceito de Lakehouse, com tr�
    bash
    source airflow_venv/bin/activate
    airflow standalone
+=======
+# lakehouse-airflow
+>>>>>>> 16524999865efe5a045dee4225200bda24b9418e

@@ -1,18 +1,8 @@
-airflow/airflow.db
-airflow/airflow.cfg
-airflow/unittests.cfg
-airflow/logs/
-
-*.pyc
 __pycache__/
-
-*.parquet
-*_SUCCESS
-*.snappy.parquet
-
-airflow_venv/
-.venv/
-
-.DS_Store
-*.save
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv
+.airflow/
 
