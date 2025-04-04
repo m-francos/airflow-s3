@@ -14,6 +14,9 @@ Projeto de pipeline de dados usando o conceito de Lakehouse, com três camadas: 
    bash
    source airflow_venv/bin/activate
    airflow standalone
-=======
-# lakehouse-airflow
->>>>>>> 16524999865efe5a045dee4225200bda24b9418e
+2. Inicie o Airflow:
+   airflow standalone
+3. Acesse a interface web do Airflow no navegador:
+   Ative e rode a DAG lakehouse_pipeline
+   Clique no switch para ativar
+   Depois clique em “Trigger DAG” (botão de play) para executar
