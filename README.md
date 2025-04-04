@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-Este projeto simula um pipeline de dados usando o conceito de Lakehouse, com três camadas: landing, bronze, silver e gold. O pipeline é orquestrado com Apache Airflow.
+Projeto de pipeline de dados usando o conceito de Lakehouse, com três camadas: landing, bronze, silver e gold. O pipeline é orquestrado com Apache Airflow.
 
 
 - landing: arquivos de entrada em JSON.
