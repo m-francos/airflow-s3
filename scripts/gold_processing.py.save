@@ -1,0 +1,48 @@
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, sum, count
+
+def main():
+    spark = SparkSession.builder.appName("GoldLayerProcessing").getOrCreate()
+    
+    try:
+        silver_path = "/home/maite/lakehouse/silver/"
+        gold_path = "/home/maite/lakehouse/gold/gold_dataset.parquet"
+
+        customers = spark.read.parquet(f"{silver_path}customers.parquet")
+        orders = spark.read.parquet(f"{silver_path}orders.parquet")
+        order_items = spark.read.parquet(f"{silver_path}order_items.parquet")
+
+        print("Esquema de orders:")
+        orders.printSchema()
+        print("\nEsquema de order_items:")
+        order_items.printSchema()
+
+        orders_with_items = orders.join(
+            order_items,
+            orders["id"] == order_items["order_id"],  # Corrigido aqui
+            "inner"
+        )
+
+        complete_data = orders_with_items.join(
+            customers,
+            orders_with_items["customer_id"] == customers["id"],
+            "inner"
+        )
+
+        gold_data = complete_data.groupBy("city", "state").agg(
+            count("id").alias("quantidade_pedidos"),
+            sum("price").alias("valor_total_pedidos")
+        )
+
+        gold_data.write.mode("overwrite").parquet(gold_path)
+        print(f"Dados Gold salvos em: {gold_path}")
+
+    except Exception as e:
+        print(f"Erro: {str(e)}")
+        raise
+
+    finally:
+        spark.stop()
+
+if __name__ == "__main__":
+    main

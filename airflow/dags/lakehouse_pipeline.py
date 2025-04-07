@@ -1,71 +1,65 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
+import os
+
+DAG_PATH = os.path.dirname(os.path.abspath(__file__))
+BASE_PATH = os.path.dirname(os.path.dirname(DAG_PATH))
+SCRIPTS_PATH = os.path.join(BASE_PATH, "scripts")
 
 default_args = {
     'owner': 'maite',
-    'depends_on_past': False,
     'start_date': datetime(2023, 1, 1),
-    'email_on_failure': False,
-    'email_on_retry': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
 }
 
-dag = DAG(
-    'lakehouse_data_pipeline',
+with DAG(
+    'lakehouse_pipeline',
     default_args=default_args,
-    description='Pipeline completo para processamento Lakehouse',
+    description='Pipeline Lakehouse com caminhos dinâmicos',
     schedule_interval=None,
     catchup=False,
-    tags=['lakehouse', 'databricks', 'pyspark'],
-)
+) as dag:
 
-bronze_customers = BashOperator(
-    task_id='bronze_customers',
-    bash_command='spark-submit /home/maite/lakehouse/scripts/bronze/bronze_customers.py',
-    dag=dag,
-)
+    bronze_customers = BashOperator(
+        task_id='bronze_customers',
+        bash_command=f'spark-submit {os.path.join(SCRIPTS_PATH, "bronze", "bronze_customers.py")}'
+    )
 
-bronze_orders = BashOperator(
-    task_id='bronze_orders',
-    bash_command='spark-submit /home/maite/lakehouse/scripts/bronze/bronze_orders.py',
-    dag=dag,
-)
+    bronze_orders = BashOperator(
+        task_id='bronze_orders',
+        bash_command=f'spark-submit {os.path.join(SCRIPTS_PATH, "bronze", "bronze_orders.py")}'
+    )
 
-bronze_order_items = BashOperator(
-    task_id='bronze_order_items',
-    bash_command='spark-submit /home/maite/lakehouse/scripts/bronze/bronze_order_items.py',
-    dag=dag,
-)
+    bronze_order_items = BashOperator(
+        task_id='bronze_order_items',
+        bash_command=f'spark-submit {os.path.join(SCRIPTS_PATH, "bronze", "bronze_order_items.py")}'
+    )
 
-silver_customers = BashOperator(
-    task_id='silver_customers',
-    bash_command='spark-submit /home/maite/lakehouse/scripts/silver/customers_silver.py',
-    dag=dag,
-)
+    silver_customers = BashOperator(
+        task_id='silver_customers',
+        bash_command=f'spark-submit {os.path.join(SCRIPTS_PATH, "silver", "customers_silver.py")}'
+    )
 
-silver_orders = BashOperator(
-    task_id='silver_orders',
-    bash_command='spark-submit /home/maite/lakehouse/scripts/silver/orders_silver.py',
-    dag=dag,
-)
+    silver_orders = BashOperator(
+        task_id='silver_orders',
+        bash_command=f'spark-submit {os.path.join(SCRIPTS_PATH, "silver", "orders_silver.py")}'
+    )
 
-silver_order_items = BashOperator(
-    task_id='silver_order_items',
-    bash_command='spark-submit /home/maite/lakehouse/scripts/silver/order_items_silver.py',
-    dag=dag,
-)
+    silver_order_items = BashOperator(
+        task_id='silver_order_items',
+        bash_command=f'spark-submit {os.path.join(SCRIPTS_PATH, "silver", "order_items_silver.py")}'
+    )
 
-gold_processing = BashOperator(
-    task_id='gold_processing',
-    bash_command='spark-submit /home/maite/lakehouse/scripts/gold_processing.py',
-    dag=dag,
-)
+    gold = BashOperator(
+        task_id='gold',
+        bash_command=f'spark-submit {os.path.join(SCRIPTS_PATH, "gold_processing.py")}'
+    )
 
+    [bronze_customers, bronze_orders, bronze_order_items] >> silver_customers
+    [bronze_customers, bronze_orders, bronze_order_items] >> silver_orders
+    [bronze_customers, bronze_orders, bronze_order_items] >> silver_order_items
 
-[bronze_customers, bronze_orders, bronze_order_items] >> silver_customers
-[bronze_customers, bronze_orders, bronze_order_items] >> silver_orders
-[bronze_customers, bronze_orders, bronze_order_items] >> silver_order_items
+    [silver_customers, silver_orders, silver_order_items] >> gold
 
-[silver_customers, silver_orders, silver_order_items] >> gold_processing
