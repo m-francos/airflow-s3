@@ -1,22 +1,29 @@
-Projeto de pipeline de dados usando o conceito de Lakehouse, com três camadas: landing, bronze, silver e gold. O pipeline é orquestrado com Apache Airflow.
+Lakehouse Pipeline com Airflow
 
+Pipeline de dados com Airflow usando as camadas landing, bronze, silver e gold.
 
-- landing: arquivos de entrada em JSON.
-- bronze: arquivos Parquet extraídos da landing.
-- silver: dados limpos da bronze.
-- gold: dataset final com dados tratados.
-- scripts: scripts de transformação para cada camada.
-- airflow/dags/: DAG usada para orquestrar o pipeline no Airflow.
+    landing: arquivos de entrada em JSON
 
-## Como executar
+    bronze: arquivos Parquet extraídos da landing
 
-1. Ative o ambiente virtual e inicie o Airflow:
-   bash
-   source airflow_venv/bin/activate
-   airflow standalone
-2. Inicie o Airflow:
-   airflow standalone
-3. Acesse a interface web do Airflow no navegador:
-   Ative e rode a DAG lakehouse_pipeline
-   Clique no switch para ativar
-   Depois clique em “Trigger DAG” (botão de play) para executar
+    silver: dados limpos da bronze
+
+    gold: dataset final com dados tratados
+
+Como rodar
+
+    Clone o repositório:
+    git clone https://github.com/m-francos/lakehouse-airflow.git
+    cd lakehouse-airflow
+
+    Ative o ambiente virtual:
+    source airflow_venv/bin/activate
+
+    Rode o script de inicialização:
+    ./start.sh
+
+    Acesse o Airflow em http://localhost:8080
+    Usuário: admin
+    Senha: admin
+
+    Ative e execute a DAG chamada lakehouse_pipeline
