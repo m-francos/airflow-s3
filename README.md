@@ -9,16 +9,49 @@ Pipeline de dados com Airflow usando as camadas landing, bronze, silver e gold.
 
 Como rodar
 
-    Clone o repositório:
-    git clone https://github.com/m-francos/lakehouse-airflow.git
-    cd lakehouse-airflow
+    Windows
+    
+        # Clone o repositório
+            git clone https://github.com/m-francos/lakehouse-airflow.git
+            cd lakehouse-airflow
 
-    Ative o ambiente virtual:
-    source airflow_venv/bin/activate
+        # Crie o ambiente virtual
+            python -m venv airflow_venv
 
-    Rode o script de inicialização:
-    ./start.sh
+        # Ative o ambiente virtual
+            airflow_venv\Scripts\activate
 
-    Acesse o Airflow em http://localhost:8080
+        # Instale os pacotes
+            pip install -r requirements.txt
 
-    Ative e execute a DAG chamada lakehouse_pipeline
+        # Rode o script de inicialização
+            ./start.sh
+
+        # Acesse o Airflow
+            http://localhost:8080
+
+        # Ative e execute a DAG chamada lakehouse_pipeline
+
+    
+    MacOS & Linux
+
+        # Clone o repositório
+            git clone https://github.com/m-francos/lakehouse-airflow.git
+            cd lakehouse-airflow
+
+        # Crie o ambiente virtual
+            python3 -m venv airflow_venv
+
+        # Ative o ambiente virtual
+            source airflow_venv/bin/activate
+
+        # Instale os pacotes
+            pip install -r requirements.txt
+
+        # Rode o script de inicialização
+            ./start.sh
+
+        # Acesse o Airflow
+            http://localhost:8080
+
+        # Ative e execute a DAG chamada lakehouse_pipeline
