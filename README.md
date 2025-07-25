@@ -137,9 +137,9 @@ From here, you can access the address above in your browser and log in.
 
 The first configuration of the web server should be to change the host in Airflow. To do this, go to **Admin > Connections** > Search for **"spark_default"** > Change the **"Host"** field from **"yarn"** to **"local"** and save.
 
-Next, configure the AWS keys by going to Admin > Connections > Search for "aws_default" > Fill the "Login" field with your AWS_ACCESS_KEY_ID and the "Password" field with your AWS_SECRET_ACCESS_KEY, then save.
+Next, configure the AWS keys by going to **Admin > Connections** > Search for **"aws_default"** > Fill the **"Login"** field with your **AWS_ACCESS_KEY_ID** and the "Password" field with your **AWS_SECRET_ACCESS_KEY**, then save.
 
-Then, you can go to the **"Search Dags"** field and search for **"lakehouse_pipeline"**. Click on the search result, and you will have access to the interface related to the created Airflow instance. You can execute it by clicking the **"Trigger DAG"** button in the upper right corner of the screen, where you can observe the execution order and whether the Spark applications were successful or not. You can verify this by looking in the repository for each of the bronze, silver, and gold folders, where a subfolder called `parquet` will be created.
+Then, you can go to the **"Search Dags"** field and search for **"s3_pipeline"**. Click on the search result, and you will have access to the interface related to the created Airflow instance. You can execute it by clicking the **"Trigger DAG"** button in the upper right corner of the screen, where you can observe the execution order and whether the Spark applications were successful or not. You can verify this by looking in the repository for each of the bronze, silver, and gold folders, where a subfolder called `parquet` will be created.
 
 ## 5. Databricks Lakehouse Architecture
 
