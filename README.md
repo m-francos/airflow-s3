@@ -4,13 +4,13 @@ This repository is intended for orchestrating Spark applications using the Apach
 
 ## Table of Contents
 
-1. [Technologies](#technologies)
+1. [Prerequisites](#technologies)
 2. [Install and Run](#install-and-run)
 3. [S3 Configuration](#s3-configuration)
 4. [Apache Airflow Webserver](#apache-airflow-webserver)
 5. [Databricks Lakehouse Architecture](#databricks-lakehouse-architecture)
 
-## 1. Technologies
+## 1. Prerequisites
 
 A list of technologies used within the project:
 
@@ -87,25 +87,22 @@ airflow users create \
   --password admin
 ```
 
-Run Airflow in **two terminals**:
-```bash
-# Terminal 1
-airflow scheduler
-
-# Terminal 2
-airflow webserver -p 8080
-```
-
-Or use **standalone mode**:
-```bash
-airflow standalone
-```
-
 ## 3. S3 Configuration
 
-This project uses AWS S3 for data storage.  
-Fill the a `.env` file in the project root with:
+This project uses AWS S3 for data storage.
 
+You need to create an **S3 bucket** for the project with the name `mf-atividadebucket` following folder structure:
+```
+landing/
+bronze/
+silver/
+gold/
+```
+Upload the JSON files provided in the `lakehouse/landing` folder of this repository to the `landing` folder in your S3 bucket.
+
+If you named your bucket differently, update the S3 paths in the scripts to match your bucket name.
+
+Fill a `.env` file in the project root with:
 ```
 AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY=YOUR_SECRET_ACCESS_KEY
@@ -119,6 +116,20 @@ Also, when Airflow is running (http://localhost:8080), before triggering the DAG
 - Save.
 
 ## 4. Apache Airflow Webserver
+
+You can run Airflow in **two terminals**:
+```bash
+# Terminal 1
+airflow scheduler
+
+# Terminal 2
+airflow webserver -p 8080
+```
+
+Or use **standalone mode**:
+```bash
+airflow standalone
+```
 
 Webserver will start at: `http://localhost:8080`
 
