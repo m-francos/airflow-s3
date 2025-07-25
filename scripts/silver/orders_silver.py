@@ -1,11 +1,19 @@
 import os
 from pyspark.sql import SparkSession
+from dotenv import load_dotenv
 
-base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-bronze_path = os.path.join(base_path, "data", "bronze", "orders.parquet")
-silver_path = os.path.join(base_path, "data", "silver", "orders.parquet")
+load_dotenv()
 
-spark = SparkSession.builder.appName("Silver_Orders").getOrCreate()
+spark = SparkSession.builder \
+    .appName("Silver_Orders") \
+    .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+    .config("spark.hadoop.fs.s3a.access.key", os.getenv("AWS_ACCESS_KEY_ID")) \
+    .config("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY")) \
+    .config("spark.hadoop.fs.s3a.endpoint", "s3.amazonaws.com") \
+    .getOrCreate()
+
+bronze_path = "s3a://mf-atividadebucket/bronze/orders.parquet"
+silver_path = "s3a://mf-atividadebucket/silver/orders.parquet"
 
 df = spark.read.parquet(bronze_path)
 
@@ -17,4 +25,3 @@ df_silver = df.withColumnRenamed("order_id", "id") \
 df_silver.write.mode("overwrite").parquet(silver_path)
 
 spark.stop()
-

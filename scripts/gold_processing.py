@@ -1,18 +1,26 @@
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, sum, countDistinct
+from dotenv import load_dotenv
 
 def main():
-    spark = SparkSession.builder.appName("GoldLayerProcessing").getOrCreate()
+    load_dotenv()
+
+    spark = SparkSession.builder \
+        .appName("GoldLayerProcessing") \
+        .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+        .config("spark.hadoop.fs.s3a.access.key", os.getenv("AWS_ACCESS_KEY_ID")) \
+        .config("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY")) \
+        .config("spark.hadoop.fs.s3a.endpoint", "s3.amazonaws.com") \
+        .getOrCreate()
 
     try:
-        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        silver_path = os.path.join(base_path, "data", "silver")
-        gold_path = os.path.join(base_path, "data", "gold", "gold_dataset.parquet")
+        silver_path = "s3a://mf-atividadebucket/silver/"
+        gold_path = "s3a://mf-atividadebucket/gold/gold_dataset.parquet"
 
-        customers = spark.read.parquet(os.path.join(silver_path, "customers.parquet"))
-        orders = spark.read.parquet(os.path.join(silver_path, "orders.parquet"))
-        order_items = spark.read.parquet(os.path.join(silver_path, "order_items.parquet"))
+        customers = spark.read.parquet(f"{silver_path}customers.parquet")
+        orders = spark.read.parquet(f"{silver_path}orders.parquet")
+        order_items = spark.read.parquet(f"{silver_path}order_items.parquet")
 
         print(f"Total de pedidos: {orders.count()}")
         print(f"Total de itens: {order_items.count()}")
@@ -65,4 +73,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

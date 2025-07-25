@@ -1,17 +1,24 @@
 import os
 from pyspark.sql import SparkSession
+from dotenv import load_dotenv
 
-base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+load_dotenv()
 
-spark = SparkSession.builder.appName("BronzeCustomers").getOrCreate()
+spark = SparkSession.builder \
+    .appName("BronzeCustomers") \
+    .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+    .config("spark.hadoop.fs.s3a.access.key", os.getenv("AWS_ACCESS_KEY_ID")) \
+    .config("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY")) \
+    .config("spark.hadoop.fs.s3a.endpoint", "s3.amazonaws.com") \
+    .getOrCreate()
 
-input_path = os.path.join(base_path, "data", "landing", "customers.json")
-df = spark.read.json(input_path)
+s3_input_path = "s3a://mf-atividadebucket/landing/customers.json"
+s3_output_path = "s3a://mf-atividadebucket/bronze/customers.parquet"
+
+df = spark.read.json(s3_input_path)
 
 df.show()
 
-output_path = os.path.join(base_path, "data", "bronze", "customers.parquet")
-df.write.mode("overwrite").parquet(output_path)
+df.write.mode("overwrite").parquet(s3_output_path)
 
 spark.stop()
-
